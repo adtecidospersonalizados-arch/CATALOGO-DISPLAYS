@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adecore — Displays Personalizados</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--verde:#2e7d32;--verdel:#e8f5e9;--branco:#fff;--cinza:#f5f5f5;--borda:#e0e0e0;--preto:#1a1a1a}
+body{font-family:'Montserrat',sans-serif;background:var(--cinza);color:var(--preto);min-height:100vh}
+header{background:var(--branco);padding:16px 28px;display:flex;align-items:center;gap:16px;border-bottom:4px solid var(--verde);box-shadow:0 2px 12px rgba(0,0,0,.08);position:sticky;top:0;z-index:100}
+.brand-logo{font-size:2rem}
+.brand-nome{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;font-style:italic;color:var(--verde);letter-spacing:2px}
+.brand-sub{font-size:9px;color:#aaa;letter-spacing:2px;text-transform:uppercase}
+.hd{border-left:2px solid var(--verdel);padding-left:14px}
+.hero{background:linear-gradient(135deg,#1b5e20,#1a1a1a);padding:48px 28px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(46,125,50,.2),transparent 60%)}
+.hero-in{position:relative;max-width:700px}
+.hero-tag{display:inline-block;border:1px solid rgba(46,125,50,.6);color:#a5d6a7;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:5px 14px;border-radius:3px;margin-bottom:16px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:700;font-style:italic;color:#fff;line-height:1.2;margin-bottom:12px}
+.hero h1 span{color:#a5d6a7}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.45);font-style:italic}
+.toolbar{background:var(--branco);border-bottom:1px solid var(--borda);padding:14px 28px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.busca-wrap{position:relative;flex:1;min-width:180px;max-width:320px}
+.busca-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#bbb;pointer-events:none}
+#busca{width:100%;padding:9px 12px 9px 34px;border:1.5px solid var(--borda);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:13px;outline:none}
+#busca:focus{border-color:var(--verde)}
+.filtros{display:flex;gap:7px;flex-wrap:wrap}
+.fbtn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--borda);background:var(--branco);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;color:#888;transition:all .2s}
+.fbtn:hover,.fbtn.ativo{background:var(--verde);border-color:var(--verde);color:#fff}
+.fbtn-todas{padding:6px 14px;border-radius:20px;background:var(--verde);color:#fff;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:none}
+.contador{padding:14px 28px 0;font-size:10px;color:#bbb;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.contador span{color:var(--verde)}
+.lista{padding:20px 28px 80px;max-width:1400px;margin:0 auto}
+.tema{background:var(--branco);border-radius:20px;border:1.5px solid var(--borda);overflow:hidden;margin-bottom:28px;box-shadow:0 4px 20px rgba(0,0,0,.05)}
+.tema.escondido{display:none}
+.tema-hd{padding:18px 24px;display:flex;align-items:center;gap:14px;background:var(--verdel);border-left:6px solid var(--verde)}
+.tema-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;font-style:italic;line-height:1;color:var(--verde);white-space:nowrap}
+.tema-titulo{font-size:1rem;font-weight:700;color:#2e7d32;font-style:italic}
+.tema-corpo{padding:20px 24px 26px}
+.produtos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.produto-card{border-radius:12px;border:1.5px solid var(--borda);overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer}
+.produto-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.produto-foto{aspect-ratio:1;overflow:hidden;background:#fafafa}
+.produto-foto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.produto-card:hover .produto-foto img{transform:scale(1.05)}
+.produto-nome{padding:10px 12px;font-size:11px;font-weight:700;text-align:center;color:var(--preto);border-top:1px solid var(--borda)}
+.vazio{text-align:center;padding:80px 20px;color:#ccc}
+.vazio-icon{font-size:4rem;margin-bottom:16px;display:block}
+.vazio-titulo{font-size:1.2rem;font-weight:700;margin-bottom:8px}
+
+/* LIGHTBOX */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:500;align-items:center;justify-content:center;padding:20px}
+.lightbox.aberto{display:flex}
+.lightbox-img{max-width:90vw;max-height:85vh;border-radius:12px;object-fit:contain}
+.lightbox-nome{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:700;background:rgba(0,0,0,.5);padding:8px 20px;border-radius:20px}
+.lightbox-x{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.2);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.lightbox-x:hover{background:rgba(255,255,255,.4)}
+
+footer{background:#1b5e20;text-align:center;padding:28px;border-top:3px solid var(--verde)}
+.f-nome{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:#a5d6a7;letter-spacing:3px}
+.f-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:5px;font-style:italic}
+.f-copy{font-size:10px;color:rgba(255,255,255,.2);margin-top:8px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-logo">🖼️</div>
+  <div class="hd">
+    <div class="brand-nome">Adecore</div>
+    <div class="brand-sub">Displays Personalizados</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in">
+    <div class="hero-tag">Catálogo Oficial 2025</div>
+    <h1>Displays que <span>encantam</span></h1>
+    <div class="hero-sub">Personalizados para cada ocasião especial</div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="busca-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="busca" placeholder="Buscar tema ou produto...">
+  </div>
+  <div class="filtros" id="filtros">
+    <button class="fbtn-todas ativo" onclick="filtrar('todas',this)">Todos</button>
+  </div>
+</div>
+
+<div class="contador" id="contador"></div>
+
+<div class="lista" id="lista">
+  <div class="vazio" id="vazio">
+    <span class="vazio-icon">🖼️</span>
+    <div class="vazio-titulo">Catálogo em breve!</div>
+  </div>
+</div>
+
+<footer>
+  <div class="f-nome">Adecore</div>
+  <div class="f-sub">Displays Personalizados para cada ocasião</div>
+  <div class="f-copy">© 2025 Adecore — Todos os direitos reservados</div>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="fecharLB()">
+  <button class="lightbox-x" onclick="fecharLB()">✕</button>
+  <img class="lightbox-img" id="lb-img" src="" alt="">
+  <div class="lightbox-nome" id="lb-nome"></div>
+</div>
+
+<script>
+let dados = {temas: []};
+let filtroAtual = 'todas';
+
+window.onload = () => {
+  const s = localStorage.getItem('adecore_catalogo');
+  if(s) { try { dados = JSON.parse(s); } catch(e){} }
+  renderTudo();
+};
+
+function renderTudo() {
+  const lista = document.getElementById('lista');
+  const filtros = document.getElementById('filtros');
+  lista.querySelectorAll('.tema').forEach(el => el.remove());
+  filtros.innerHTML = '<button class="fbtn-todas ativo" onclick="filtrar(\'todas\',this)">Todos</button>';
+
+  if(!dados.temas.length) {
+    document.getElementById('vazio').style.display = 'block';
+    document.getElementById('contador').innerHTML = '';
+    return;
+  }
+  document.getElementById('vazio').style.display = 'none';
+
+  dados.temas.forEach((t, i) => {
+    const num = String(i+1).zfill ? String(i+1).zfill(2) : String(i+1).padStart(2,'0');
+    const fb = document.createElement('button');
+    fb.className = 'fbtn'; fb.textContent = t.nome;
+    fb.onclick = function(){ filtrar('t'+i, this); };
+    filtros.appendChild(fb);
+
+    const prods = (t.produtos || []).map((p, j) => `
+      <div class="produto-card" onclick="abrirLB('${p.img}','${p.nome.replace(/'/g,"\\'")}')">
+        <div class="produto-foto"><img src="${p.img}" alt="${p.nome}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%23f5f5f5%22 width=%22100%22 height=%22100%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23ccc%22 font-size=%2230%22>🖼️</text></svg>'"></div>
+        <div class="produto-nome">${p.nome || 'Produto '+(j+1)}</div>
+      </div>`).join('');
+
+    const sec = document.createElement('section');
+    sec.className = 'tema'; sec.id = 't'+i;
+    sec.dataset.search = t.nome.toLowerCase() + ' ' + (t.produtos||[]).map(p=>p.nome.toLowerCase()).join(' ');
+    sec.innerHTML = `
+      <div class="tema-hd">
+        <div class="tema-num">${num}</div>
+        <div class="tema-titulo">${t.nome}</div>
+      </div>
+      <div class="tema-corpo">
+        <div class="produtos-grid">${prods}</div>
+      </div>`;
+    lista.appendChild(sec);
+  });
+
+  atualizarVista();
+}
+
+function filtrar(id, btn) {
+  filtroAtual = id;
+  document.querySelectorAll('.fbtn,.fbtn-todas').forEach(b => b.classList.remove('ativo'));
+  if(btn) btn.classList.add('ativo');
+  atualizarVista();
+}
+function atualizarVista() {
+  const t = document.getElementById('busca').value.toLowerCase().trim();
+  let v = 0;
+  document.querySelectorAll('.tema').forEach(s => {
+    const mf = filtroAtual === 'todas' || s.id === filtroAtual;
+    const ms = !t || s.dataset.search.includes(t);
+    s.classList.toggle('escondido', !(mf && ms));
+    if(mf && ms) v++;
+  });
+  document.getElementById('contador').innerHTML = `Exibindo <span>${v}</span> tema${v!==1?'s':''}`;
+}
+
+function abrirLB(src, nome) {
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lb-nome').textContent = nome;
+  document.getElementById('lightbox').classList.add('aberto');
+}
+function fecharLB() { document.getElementById('lightbox').classList.remove('aberto'); }
+
+document.getElementById('busca').addEventListener('input', atualizarVista);
+document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharLB(); });
+</script>
+</body>
+</html>

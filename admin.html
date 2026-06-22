@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adecore — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--verde:#2e7d32;--verde2:#1b5e20;--verdel:#e8f5e9;--branco:#fff;--cinza:#f5f5f5;--borda:#e0e0e0;--preto:#1a1a1a;--roxo:#7c4daa}
+body{font-family:'Montserrat',sans-serif;background:var(--cinza);color:var(--preto);min-height:100vh}
+
+/* LOGIN */
+#tela-login{position:fixed;inset:0;background:linear-gradient(135deg,#1b5e20,#1a1a1a);display:flex;align-items:center;justify-content:center;z-index:999}
+.login-box{background:var(--branco);border-radius:20px;padding:40px;width:100%;max-width:380px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.login-logo{font-size:3rem;margin-bottom:16px;display:block}
+.login-titulo{font-family:'Playfair Display',serif;font-size:1.6rem;font-style:italic;color:var(--verde);margin-bottom:6px}
+.login-sub{font-size:11px;color:#aaa;margin-bottom:28px;letter-spacing:1px;text-transform:uppercase}
+.login-input{width:100%;border:1.5px solid var(--borda);border-radius:10px;padding:13px 16px;font-family:'Montserrat',sans-serif;font-size:14px;outline:none;text-align:center;letter-spacing:3px;margin-bottom:14px}
+.login-input:focus{border-color:var(--verde)}
+.login-btn{width:100%;padding:13px;background:var(--verde);color:#fff;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.login-btn:hover{background:var(--verde2)}
+.login-erro{color:#e53935;font-size:12px;font-weight:600;margin-top:10px;display:none}
+
+/* ADMIN */
+#tela-admin{display:none}
+.admin-bar{background:#1b5e20;color:#fff;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.admin-bar-titulo{font-size:11px;font-weight:700;letter-spacing:1px;opacity:.8}
+.admin-bar-btns{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.abtn{padding:6px 14px;border-radius:20px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-transform:uppercase}
+.abtn-verde{background:var(--verde);color:#fff}
+.abtn-verde:hover{background:var(--verde2)}
+.abtn-outline{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.3)}
+.abtn-outline:hover{background:rgba(255,255,255,.1)}
+.abtn-sair{background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15)}
+
+header{background:var(--branco);padding:16px 28px;display:flex;align-items:center;gap:16px;border-bottom:4px solid var(--verde);box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.brand-logo{font-size:2rem}
+.brand-nome{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;font-style:italic;color:var(--verde);letter-spacing:2px}
+.brand-sub{font-size:9px;color:#aaa;letter-spacing:2px;text-transform:uppercase}
+.hd{border-left:2px solid var(--verdel);padding-left:14px}
+
+.hero{background:linear-gradient(135deg,#1b5e20,#1a1a1a);padding:40px 28px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(46,125,50,.2),transparent 60%)}
+.hero-in{position:relative}
+.hero-tag{display:inline-block;border:1px solid rgba(46,125,50,.6);color:#a5d6a7;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:5px 14px;border-radius:3px;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.6rem,4vw,2.8rem);font-weight:700;font-style:italic;color:#fff;line-height:1.2;margin-bottom:8px}
+.hero h1 span{color:#a5d6a7}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.45);font-style:italic}
+
+.content{padding:20px 28px 80px;max-width:1200px;margin:0 auto}
+.instrucao{background:#fff8e1;border:1.5px solid #ffe082;border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:12px;color:#795548;line-height:1.7}
+.instrucao strong{color:#5D4037}
+.instrucao a{color:var(--verde);font-weight:700}
+
+/* TEMAS */
+.temas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.tema-card{background:var(--branco);border-radius:16px;border:1.5px solid var(--borda);overflow:hidden;transition:box-shadow .2s}
+.tema-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.tema-top{height:5px;background:var(--verde)}
+.tema-body{padding:16px}
+.tema-nome{font-size:14px;font-weight:700;margin-bottom:4px}
+.tema-count{font-size:11px;color:#aaa;margin-bottom:12px}
+.tema-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:12px;border-radius:8px;overflow:hidden}
+.tema-preview img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.tema-preview-ph{aspect-ratio:1;background:#f5f5f5;display:flex;align-items:center;justify-content:center;color:#ddd;font-size:1.2rem}
+.tema-btns{display:flex;gap:8px}
+.btn-sm{padding:6px 12px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;border:none;font-family:'Montserrat',sans-serif;transition:all .2s;text-transform:uppercase}
+.btn-edit{background:var(--verde);color:#fff}
+.btn-del{background:#fff;color:#e53935;border:1.5px solid #e53935}
+.btn-del:hover{background:#e53935;color:#fff}
+
+.add-card{border:2px dashed var(--borda);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:40px 20px;cursor:pointer;transition:all .2s;min-height:180px;color:#ccc}
+.add-card:hover{border-color:var(--verde);color:var(--verde);background:var(--verdel)}
+.add-card span{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+
+/* MODAL TEMA */
+.modal-fundo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;align-items:center;justify-content:center;padding:16px}
+.modal-fundo.aberto{display:flex}
+.modal{background:var(--branco);border-radius:20px;width:100%;max-width:720px;max-height:92vh;overflow-y:auto}
+.modal-cabeca{padding:18px 22px;border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--branco);z-index:1}
+.modal-titulo{font-size:15px;font-weight:700}
+.modal-x{background:none;border:none;font-size:22px;cursor:pointer;color:#bbb}
+.modal-corpo{padding:20px 22px}
+.campo-label{font-size:9px;font-weight:700;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;margin-top:16px;display:block}
+.campo-label:first-child{margin-top:0}
+.campo-texto{width:100%;border:1.5px solid var(--borda);border-radius:8px;padding:11px 14px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;outline:none;margin-bottom:4px}
+.campo-texto:focus{border-color:var(--verde)}
+
+/* PRODUTOS */
+.produtos-lista{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.produto-item{background:#fafafa;border:1.5px solid var(--borda);border-radius:10px;padding:12px;display:grid;grid-template-columns:80px 1fr auto;gap:12px;align-items:center}
+.produto-img{width:80px;height:80px;border-radius:8px;object-fit:cover;background:#eee;display:flex;align-items:center;justify-content:center;color:#ddd;font-size:1.5rem;overflow:hidden}
+.produto-img img{width:100%;height:100%;object-fit:cover}
+.produto-info{display:flex;flex-direction:column;gap:6px}
+.produto-input{border:1.5px solid var(--borda);border-radius:6px;padding:7px 10px;font-family:'Montserrat',sans-serif;font-size:12px;outline:none;width:100%}
+.produto-input:focus{border-color:var(--verde)}
+.produto-del{background:#fff;color:#e53935;border:1.5px solid #e53935;border-radius:6px;padding:6px 10px;cursor:pointer;font-size:11px;font-weight:700;font-family:'Montserrat',sans-serif;transition:all .2s;white-space:nowrap}
+.produto-del:hover{background:#e53935;color:#fff}
+
+.btn-add-produto{width:100%;padding:12px;border:2px dashed var(--borda);border-radius:10px;background:transparent;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:#aaa;cursor:pointer;transition:all .2s;text-transform:uppercase;margin-top:10px}
+.btn-add-produto:hover{border-color:var(--verde);color:var(--verde);background:var(--verdel)}
+
+.modal-rodape{padding:14px 22px;border-top:1px solid var(--borda);display:flex;gap:8px;justify-content:space-between;align-items:center;position:sticky;bottom:0;background:var(--branco)}
+.btn{padding:9px 18px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-transform:uppercase}
+.btn-verde{background:var(--verde);color:#fff}
+.btn-verde:hover{background:var(--verde2)}
+.btn-branco{background:var(--branco);color:var(--verde);border:2px solid var(--verde)}
+.btn-branco:hover{background:var(--verdel)}
+.btn-excluir{color:#e53935;background:none;border:1.5px solid #e53935;padding:8px 16px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.btn-excluir:hover{background:#e53935;color:#fff}
+
+.dica-imgbb{background:#e3f2fd;border:1.5px solid #90caf9;border-radius:8px;padding:10px 14px;font-size:11px;color:#1565c0;margin-top:8px;line-height:1.6}
+
+footer{background:#1b5e20;text-align:center;padding:24px;border-top:3px solid var(--verde)}
+.f-nome{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:#a5d6a7;letter-spacing:3px}
+.f-copy{font-size:10px;color:rgba(255,255,255,.2);margin-top:8px}
+
+.toast{position:fixed;bottom:20px;right:20px;background:#333;color:#fff;padding:11px 18px;border-radius:10px;font-size:12px;font-weight:600;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{background:var(--verde)}
+.toast.err{background:#e53935}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="tela-login">
+  <div class="login-box">
+    <span class="login-logo">🖼️</span>
+    <div class="login-titulo">Adecore Admin</div>
+    <div class="login-sub">Área restrita</div>
+    <input type="password" class="login-input" id="senha-input" placeholder="••••••" onkeydown="if(event.key==='Enter')entrar()">
+    <button class="login-btn" onclick="entrar()">Entrar</button>
+    <div class="login-erro" id="login-erro">Senha incorreta.</div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="tela-admin">
+  <div class="admin-bar">
+    <div class="admin-bar-titulo">⚙️ PAINEL ADMIN — ADECORE</div>
+    <div class="admin-bar-btns">
+      <button class="abtn abtn-verde" onclick="abrirModalNovo()">+ Novo Tema</button>
+      <button class="abtn abtn-outline" onclick="salvar()">💾 Salvar JSON</button>
+      <label class="abtn abtn-outline" style="cursor:pointer">
+        📂 Carregar JSON
+        <input type="file" accept=".json" style="display:none" onchange="carregar(this)">
+      </label>
+      <a class="abtn abtn-outline" href="index.html" target="_blank">👁 Ver Catálogo</a>
+      <button class="abtn abtn-sair" onclick="sair()">Sair</button>
+    </div>
+  </div>
+
+  <header>
+    <div class="brand-logo">🖼️</div>
+    <div class="hd">
+      <div class="brand-nome">Adecore</div>
+      <div class="brand-sub">Displays Personalizados</div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-in">
+      <div class="hero-tag">Catálogo de Displays</div>
+      <h1>Displays que <span>encantam</span></h1>
+      <div class="hero-sub">Personalizados para cada ocasião especial</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="instrucao">
+      💡 <strong>Como usar:</strong> Clique em <strong>"+ Novo Tema"</strong> para criar um tema (ex: Três Porquinhos). Dentro de cada tema, adicione os produtos com <strong>nome</strong> e <strong>link da imagem</strong>.<br>
+      📸 <strong>Para obter o link da imagem:</strong> acesse <a href="https://imgbb.com" target="_blank">imgbb.com</a>, faça upload gratuito da foto e copie o link direto. Cole aqui no campo da imagem.
+    </div>
+    <div class="temas-grid" id="temas-grid"></div>
+  </div>
+
+  <footer>
+    <div class="f-nome">Adecore</div>
+    <div class="f-copy">© 2025 Adecore — Displays Personalizados</div>
+  </footer>
+</div>
+
+<!-- MODAL TEMA -->
+<div class="modal-fundo" id="modal">
+  <div class="modal">
+    <div class="modal-cabeca">
+      <div class="modal-titulo" id="modal-titulo">Novo Tema</div>
+      <button class="modal-x" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-corpo">
+      <span class="campo-label">Nome do Tema</span>
+      <input class="campo-texto" id="campo-nome" placeholder="Ex: Três Porquinhos, Natal, Safari...">
+
+      <span class="campo-label">Produtos do Tema</span>
+      <div class="dica-imgbb">
+        📸 Para adicionar imagens: acesse <strong>imgbb.com</strong> → faça upload → clique na imagem → copie o link em <strong>"Direct link"</strong> e cole no campo abaixo.
+      </div>
+      <div class="produtos-lista" id="produtos-lista"></div>
+      <button class="btn-add-produto" onclick="addProduto()">+ Adicionar Produto</button>
+    </div>
+    <div class="modal-rodape">
+      <button class="btn-excluir" id="btn-excluir" onclick="excluirTema()" style="display:none">🗑 Excluir Tema</button>
+      <div style="display:flex;gap:8px;margin-left:auto">
+        <button class="btn btn-branco" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-verde" onclick="salvarTema()">✓ Salvar Tema</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SENHA = 'adecore2025';
+let dados = {temas: []};
+let idxEditando = null;
+let tmpProdutos = [];
+
+// LOGIN
+function entrar() {
+  const s = document.getElementById('senha-input').value;
+  if(s === SENHA) {
+    document.getElementById('tela-login').style.display = 'none';
+    document.getElementById('tela-admin').style.display = 'block';
+    sessionStorage.setItem('adecore_auth', 'ok');
+    init();
+  } else {
+    document.getElementById('login-erro').style.display = 'block';
+    document.getElementById('senha-input').value = '';
+    document.getElementById('senha-input').focus();
+  }
+}
+function sair() { sessionStorage.removeItem('adecore_auth'); location.reload(); }
+
+window.onload = () => {
+  if(sessionStorage.getItem('adecore_auth') === 'ok') {
+    document.getElementById('tela-login').style.display = 'none';
+    document.getElementById('tela-admin').style.display = 'block';
+    init();
+  } else {
+    document.getElementById('senha-input').focus();
+  }
+};
+
+function init() {
+  const s = localStorage.getItem('adecore_catalogo');
+  if(s) { try { dados = JSON.parse(s); } catch(e){} }
+  renderAdmin();
+}
+
+function renderAdmin() {
+  const g = document.getElementById('temas-grid');
+  g.innerHTML = '';
+  dados.temas.forEach((t, i) => {
+    const prods = t.produtos || [];
+    const previews = prods.slice(0, 3).map(p =>
+      p.img ? `<img src="${p.img}" alt="${p.nome}" onerror="this.parentElement.innerHTML='<div class=tema-preview-ph>🖼️</div>'">` : '<div class="tema-preview-ph">🖼️</div>'
+    ).join('');
+    const vazios = Array(Math.max(0, 3 - prods.slice(0,3).length)).fill('<div class="tema-preview-ph">🖼️</div>').join('');
+
+    const d = document.createElement('div');
+    d.className = 'tema-card';
+    d.innerHTML = `
+      <div class="tema-top"></div>
+      <div class="tema-body">
+        <div class="tema-nome">${t.nome}</div>
+        <div class="tema-count">${prods.length} produto${prods.length !== 1 ? 's' : ''}</div>
+        <div class="tema-preview">${previews}${vazios}</div>
+        <div class="tema-btns">
+          <button class="btn-sm btn-edit" onclick="abrirModalEditar(${i})">✏️ Editar</button>
+          <button class="btn-sm btn-del" onclick="excluirDireto(${i})">🗑 Excluir</button>
+        </div>
+      </div>`;
+    g.appendChild(d);
+  });
+  const a = document.createElement('div');
+  a.className = 'add-card';
+  a.onclick = abrirModalNovo;
+  a.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg><span>+ Novo Tema</span>`;
+  g.appendChild(a);
+}
+
+// MODAL
+function abrirModalNovo() {
+  idxEditando = null;
+  tmpProdutos = [];
+  document.getElementById('modal-titulo').textContent = 'Novo Tema';
+  document.getElementById('campo-nome').value = '';
+  document.getElementById('btn-excluir').style.display = 'none';
+  renderProdutos();
+  document.getElementById('modal').classList.add('aberto');
+}
+function abrirModalEditar(i) {
+  idxEditando = i;
+  const t = dados.temas[i];
+  tmpProdutos = JSON.parse(JSON.stringify(t.produtos || []));
+  document.getElementById('modal-titulo').textContent = `Editar — ${t.nome}`;
+  document.getElementById('campo-nome').value = t.nome || '';
+  document.getElementById('btn-excluir').style.display = 'block';
+  renderProdutos();
+  document.getElementById('modal').classList.add('aberto');
+}
+function fecharModal() { document.getElementById('modal').classList.remove('aberto'); }
+
+function addProduto() {
+  tmpProdutos.push({nome: '', img: ''});
+  renderProdutos();
+}
+
+function renderProdutos() {
+  const lista = document.getElementById('produtos-lista');
+  lista.innerHTML = '';
+  tmpProdutos.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'produto-item';
+    div.innerHTML = `
+      <div class="produto-img" id="pimg_${i}">
+        ${p.img ? `<img src="${p.img}" alt="${p.nome}" onerror="this.parentElement.innerHTML='🖼️'">` : '🖼️'}
+      </div>
+      <div class="produto-info">
+        <input class="produto-input" placeholder="Nome do produto" value="${p.nome || ''}" oninput="tmpProdutos[${i}].nome=this.value">
+        <input class="produto-input" placeholder="Cole o link da imagem aqui (imgbb.com)" value="${p.img || ''}" oninput="tmpProdutos[${i}].img=this.value;atuPreview(${i},this.value)">
+      </div>
+      <button class="produto-del" onclick="remProduto(${i})">✕ Remover</button>`;
+    lista.appendChild(div);
+  });
+}
+
+function atuPreview(i, url) {
+  const el = document.getElementById('pimg_'+i);
+  if(!el) return;
+  if(url) el.innerHTML = `<img src="${url}" alt="preview" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='❌'">`;
+  else el.innerHTML = '🖼️';
+}
+
+function remProduto(i) {
+  tmpProdutos.splice(i, 1);
+  renderProdutos();
+}
+
+function salvarTema() {
+  const nome = document.getElementById('campo-nome').value.trim();
+  if(!nome) { toast('Digite o nome do tema!', 'err'); return; }
+  if(tmpProdutos.length === 0) { toast('Adicione pelo menos um produto!', 'err'); return; }
+  const tema = {nome, produtos: JSON.parse(JSON.stringify(tmpProdutos))};
+  if(idxEditando === null) dados.temas.push(tema);
+  else dados.temas[idxEditando] = tema;
+  salvarLocal(); renderAdmin(); fecharModal();
+  toast('Tema salvo!', 'ok');
+}
+function excluirTema() {
+  if(!confirm(`Excluir "${dados.temas[idxEditando].nome}"?`)) return;
+  dados.temas.splice(idxEditando, 1);
+  salvarLocal(); renderAdmin(); fecharModal();
+  toast('Excluído.', '');
+}
+function excluirDireto(i) {
+  if(!confirm(`Excluir "${dados.temas[i].nome}"?`)) return;
+  dados.temas.splice(i, 1);
+  salvarLocal(); renderAdmin();
+  toast('Excluído.', '');
+}
+
+function salvarLocal() {
+  try { localStorage.setItem('adecore_catalogo', JSON.stringify(dados)); }
+  catch(e) { toast('Use o botão 💾 Salvar JSON!', 'err'); }
+}
+function salvar() {
+  const b = new Blob([JSON.stringify(dados)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = 'adecore_catalogo.json';
+  a.click();
+  toast('JSON salvo!', 'ok');
+}
+function carregar(inp) {
+  const f = inp.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      dados = JSON.parse(e.target.result);
+      salvarLocal(); renderAdmin();
+      toast(`${dados.temas.length} temas carregados!`, 'ok');
+    } catch { toast('Arquivo inválido!', 'err'); }
+  };
+  r.readAsText(f);
+}
+function toast(msg, tipo='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${tipo}`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+document.getElementById('modal').addEventListener('click', function(e) {
+  if(e.target === this) fecharModal();
+});
+</script>
+</body>
+</html>
